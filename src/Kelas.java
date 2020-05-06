@@ -46,6 +46,7 @@ public class Kelas {
 		return conflict_matrix;
 	}
 	
+        
 	public int [][] sortingByDegree(int[][] conflictmatrix, int jumlahcourse) {
 		int[][] course_degree = new int [jumlahcourse][2];
 		int degree = 0;

@@ -58,7 +58,7 @@ public class Jadwal {
 			}
 		}
 		return this.timeSlot;
-    }
+        }
 
 	public int getJumlahTimeSlot(int[][] timeslot) { 
 		int jumlah_timeslot = 0;
@@ -82,4 +82,17 @@ public class Jadwal {
 				return false;
                         }return true;
 	}
+    public static boolean checkRandomTimeslot(int randomCourse, int randomTimeslot, int[][] conflict_matrix, int[][] jadwal){
+        for(int i=0; i<conflict_matrix.length; i++)
+            if(conflict_matrix[randomCourse][i] !=0 && jadwal[i][1]==randomTimeslot)
+                return false;
+        return true;              
+    }
+    
+    public static boolean checkRandomTimeslotForLLH(int randomCourse, int randomTimeslot, int[][] conflict_matrix, int[][] jadwal){
+        for(int i=0; i<conflict_matrix.length; i++)
+            if(conflict_matrix[randomCourse][i] !=0 && jadwal[i][1]==randomTimeslot)
+                return false;
+        return true;              
+    }
 }
