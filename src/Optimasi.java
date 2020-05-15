@@ -5,8 +5,9 @@ import java.util.LinkedList;
 import java.util.Random;
 
 public class Optimasi {
-	int[][] timeslotHillClimbing, initialTimeslot, conflict_matrix, course_sorted;
+	int[][] timeslotHillClimbing, initialTimeslot, conflict_matrix, course_sorted,timeslotTabuSearch;
 	int[] timeslot;
+        double[] tabuSearchPenaltyList1;
 	String file;
 	int jumlahexam, jumlahmurid, randomCourse, randomTimeslot, iterasi;
 	double initialPenalty, bestPenalty, deltaPenalty;
@@ -35,7 +36,7 @@ public class Optimasi {
 		
 		bestPenalty = Evaluator.getPenalty(conflict_matrix, timeslotHillClimbing, jumlahmurid);
 		
-		for(int i = 0; i < 1000000; i++) {
+		for(int i = 0; i < 10000; i++) {
 			try {
 				randomCourse = random(jumlahexam); // random course
 				randomTimeslot = random(schedule.getJumlahTimeSlot(initialTimeslot)); // random timeslot
@@ -89,7 +90,7 @@ public class Optimasi {
 		
 		bestPenalty = Evaluator.getPenalty(conflict_matrix, timeslotHillClimbing, jumlahmurid); // initiate best penalty
 		
-		for(int i = 0; i < 1000000; i++) {
+		for(int i = 0; i < 10000; i++) {
 			int llh = randomNumber(1, 5);
 			int[][] timeslotLLH;
 			switch (llh) {
@@ -126,8 +127,7 @@ public class Optimasi {
 		deltaPenalty = ((initialPenalty-bestPenalty)/initialPenalty)*100;
 		// print updated timeslot
 		System.out.println("\n================================================\n");
-//    	for (int course_index = 0; course_index < jumlahexam; course_index++)
-//    		System.out.println("Timeslot untuk course "+ timeslotHillClimbing[course_index][0] +" adalah timeslot: " + timeslotHillClimbing[course_index][1]);       
+
     	System.out.println("=============================================================");
 		System.out.println("		Metode HILL CLIMBING								 "); // print best penalty
 		System.out.println("\nPenalty Initial : "+ initialPenalty); // print initial penalty
@@ -137,13 +137,107 @@ public class Optimasi {
 		System.out.println("=============================================================");
 		
 	}
+        public void getTimeslotByTabuSearch() {
+		schedule = new Jadwal(file, conflict_matrix, jumlahexam);
+		timeslot = schedule.schedulingByDegree(course_sorted);
+		
+		// initial solution
+		timeslotTabuSearch = schedule.getSchedule();
+		initialPenalty = Evaluator.getPenalty(conflict_matrix, timeslotTabuSearch, jumlahmurid);
+		
+		int[][] bestTimeslot = Evaluator.getTimeslot(timeslotTabuSearch); // handle current best timeslot
+		int[][] bestcandidate  = Evaluator.getTimeslot(timeslotTabuSearch);
+		int[][] timeslotTabuSearchSementara = Evaluator.getTimeslot(timeslotTabuSearch);
+		
+//		int timeslot_dibutuhkan = Arrays.stream(timeslot).max().getAsInt();
+		
+		//inisiasi tabulist
+        LinkedList<int[][]> tabuList = new LinkedList<int[][]>();
+        int maxtabusize = 10;
+        tabuList.addLast(Evaluator.getTimeslot(timeslotTabuSearch));
+        
+      //inisiasi iterasi
+        int maxiteration = 10000;
+        int iteration=0;
+        
+      //inisasi itung penalty
+        double penalty1 = 0;
+        double penalty2 = 0;
+        double penalty3 = 0;
+        
+        boolean terminate = false;
+        
+        while(!terminate){
+            iteration++;
+            
+//            search candidate solution / search neighbor
+//            sneighborhood = getneighbor(bestcandidate)
+           ArrayList<int[][]> sneighborhood = new ArrayList<>();
+//           ArrayList<Double> listPenalty = new ArrayList<>();     
+              
+//        		int[][] timeslotLLH;
+        	LowLevelHeuristics lowLevelHeuristics = new LowLevelHeuristics(conflict_matrix);
+        	timeslotTabuSearchSementara = lowLevelHeuristics.move1(timeslotTabuSearchSementara);
+			sneighborhood.add(timeslotTabuSearchSementara);
+			timeslotTabuSearchSementara = lowLevelHeuristics.swap2(timeslotTabuSearchSementara);
+			sneighborhood.add(timeslotTabuSearchSementara);
+			timeslotTabuSearchSementara = lowLevelHeuristics.move2(timeslotTabuSearchSementara);
+			sneighborhood.add(timeslotTabuSearchSementara);
+			timeslotTabuSearchSementara = lowLevelHeuristics.swap3(timeslotTabuSearchSementara);
+			sneighborhood.add(timeslotTabuSearchSementara);
+			timeslotTabuSearchSementara = lowLevelHeuristics.move3(timeslotTabuSearchSementara);
+			sneighborhood.add(timeslotTabuSearchSementara);
+				
+        		
+        		//membandingkan neighbor, pilih best neighbor, membandingkan juga apa ada di tabu list
+           int j = 0;
+           while (sneighborhood.size() > j) {
+               if( !(tabuList.contains(sneighborhood.get(j))) && 
+            		   Evaluator.getPenalty(conflict_matrix, sneighborhood.get(j), jumlahmurid) < Evaluator.getPenalty(conflict_matrix, bestcandidate, jumlahmurid))
+                 bestcandidate = sneighborhood.get(j);
+                	
+               j++;
+           }
+                
+           sneighborhood.clear();
+                
+           //bandingkan best neighbor dengan best best solution
+           if(Evaluator.getPenalty(conflict_matrix, bestcandidate, jumlahmurid) < Evaluator.getPenalty(conflict_matrix, timeslotTabuSearch, jumlahmurid))
+              timeslotTabuSearch = Evaluator.getTimeslot(bestcandidate);
+                
+           //masukkan best neighbor tadi ke tabu
+           tabuList.addLast(bestcandidate);
+           if(tabuList.size() > maxtabusize)
+              tabuList.removeFirst();
+                
+           //return sbest;
+           tabuSearchPenaltyList1 = new double[100];
+           if ((iteration+1)%10 == 0)
+               System.out.println("Iterasi: " + (iteration+1) + " memiliki penalty " + Evaluator.getPenalty(conflict_matrix, timeslotTabuSearch, jumlahmurid));
+           
+           if (iteration == maxiteration) 
+        	   terminate = true;
+        }
+        bestPenalty = Evaluator.getPenalty(conflict_matrix, timeslotTabuSearch, jumlahmurid);
+        deltaPenalty = ((initialPenalty-bestPenalty)/initialPenalty)*100;
+        
+        System.out.println("=============================================================");
+		System.out.println("		Metode TABU SEARCH						 			 "); // print best penalty
+		System.out.println("\nPenalty Initial : "+ initialPenalty); // print initial penalty
+		System.out.println("Penalty Terbaik : " + bestPenalty); // print best penalty
+		System.out.println("Terjadi Peningkatan Penalti : " + deltaPenalty + " % dari inisial solusi");
+		System.out.println("Timeslot yang dibutuhkan : " + schedule.getJumlahTimeSlot(timeslotTabuSearch) + "\n");
+		System.out.println("=============================================================");
+	}
 
 
-//	// return timeslot each algorithm
+//	// mengembalikan timeslot di setiap algoritma
 	public int[][] getTimeslotHillClimbing() { return timeslotHillClimbing; }
+        public int[][] getTimeslotTabuSearch() { return timeslotTabuSearch; }
 	
-//	// return timeslot each algorithm
+//	// mwngembalikan timeslot di setiap algoritma
 	public int getJumlahTimeslotHC() { return schedule.getJumlahTimeSlot(timeslotHillClimbing); }
+        public int getJumlahTimeslotTabuSearch() { return schedule.getJumlahTimeSlot(timeslotTabuSearch); }
 
 	private static int randomNumber(int min, int max) {
 		Random random = new Random();

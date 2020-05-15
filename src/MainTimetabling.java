@@ -3,7 +3,7 @@ import java.util.Scanner;
 
 public class MainTimetabling {
 
-    static String folderDataset = "D:\\Eye College\\Semester 6\\OKH\\Materi\\Toronto\\";
+    static String folderDataset = "B:\\SI\\SEMESTER 6\\OKH\\FP\\Toronto\\";
     static String[][] dataset = {{"car-f-92", "CAR92"}, {"car-s-91", "CAR91"}, {"ear-f-83", "EAR83"}, {"hec-s-92", "HEC92"}, {"kfu-s-93", "KFU93"}, 
                                    {"lse-f-91", "LSE91"}, {"pur-s-93", "PUR93"}, {"rye-s-93", "RYE92"}, {"sta-f-83", "STA83"},{"tre-s-92", "TRE92"}, 
                                    {"uta-s-92", "UTA92"}, {"ute-s-92", "UTE92"}, {"yor-f-83", "YOR83"}
@@ -52,6 +52,10 @@ public class MainTimetabling {
 		optimization.getTimeslotByHillClimbing(); // menggunakan metode hillclimbing untuk iterasi sebanyak 1000.000
 		long endtimeHC = System.nanoTime();
                 
+ //             tabu
+                long starttimeTS = System.nanoTime();
+		optimization.getTimeslotByTabuSearch();
+		long endtimeTS = System.nanoTime();
                 
                 System.out.println("PENJADWALAN  " + Output + "\n");
 		
@@ -60,7 +64,10 @@ public class MainTimetabling {
 		System.out.println("Waktu eksekusi  :"+ ((double) (endtimeLargestDegree - starttimeLargestDegree)/1000000000) + " detik.\n");
                 
        
-		System.out.println("Waktu eksekusi yang dibutuhkan Hill Climbing selama " + ((double) (endtimeHC - starttimeHC)/1000000000) + " detik.\n");
+		System.out.println("Waktu eksekusi yang dibutuhkan Hill Climbing " + ((double) (endtimeHC - starttimeHC)/1000000000) + " detik.\n");
+		System.out.println("Waktu eksekusi yang dibutuhkan Tabu Search " + ((double) (endtimeTS - starttimeTS)/1000000000) + " detik.");
+		
+//		
     }
 
 
