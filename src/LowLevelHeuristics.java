@@ -17,8 +17,6 @@ public class LowLevelHeuristics {
 		}
 		
 		for (int i = 0; i < movetotal; i++) {
-//			int randomCourse = randomNumber(1, timeslot.length);
-//			int randomTimeSlot = randomNumber(1, Arrays.stream(slot).max().getAsInt());
 			int randomCourse = random(timeslot.length);
 			int randomTimeSlot = random(Arrays.stream(slot).max().getAsInt());
 			System.out.println("number to random: " + Arrays.stream(slot).max().getAsInt());
@@ -39,7 +37,7 @@ public class LowLevelHeuristics {
 		
 		int randomCourse = random(timeslot.length);
 		int randomTimeSlot = random(Arrays.stream(slot).max().getAsInt());
-//		System.out.println("number timeslot to random: " + randomTimeSlot);
+
 		if (Jadwal.checkRandomTimeslot(randomCourse, randomTimeSlot, conflict_matrix, timeslot))
 			temporaryTimeslot[randomCourse][1] = randomTimeSlot;
 		
@@ -57,7 +55,7 @@ public class LowLevelHeuristics {
 		int randomCourse2 = random(timeslot.length);
 		int randomTimeSlot1 = random(Arrays.stream(slot).max().getAsInt());
 		int randomTimeSlot2 = random(Arrays.stream(slot).max().getAsInt());
-//		System.out.println("number timeslot to random: " + randomTimeSlot1 + " , " + randomTimeSlot2);
+
 		if (Jadwal.checkRandomTimeslot(randomCourse1, randomTimeSlot1, conflict_matrix, timeslot))
 			temporaryTimeslot[randomCourse1][1] = randomTimeSlot1;
 	
@@ -80,7 +78,7 @@ public class LowLevelHeuristics {
 		int randomTimeSlot1 = random(Arrays.stream(slot).max().getAsInt());
 		int randomTimeSlot2 = random(Arrays.stream(slot).max().getAsInt());
 		int randomTimeSlot3 = random(Arrays.stream(slot).max().getAsInt());
-//		System.out.println("number timeslot to random: " + randomTimeSlot1 + " , " + randomTimeSlot2 + " , " + randomTimeSlot3);
+
 		if (Jadwal.checkRandomTimeslot(randomCourse1, randomTimeSlot1, conflict_matrix, timeslot))
 			temporaryTimeslot[randomCourse1][1] = randomTimeSlot1;
 		
@@ -143,9 +141,7 @@ public class LowLevelHeuristics {
 		int slot1 = timeslot[randomcourse1][1];
 		int slot2 = timeslot[randomcourse2][1];
 		int slot3 = timeslot[randomcourse3][1];
-			
-//		temporaryTimeslot[randomcourse1][1] = slot2;
-//		temporaryTimeslot[randomcourse2][1] = slot1;
+
 		
 		if (Jadwal.checkRandomTimeslot(randomcourse1, slot2, conflict_matrix, timeslot)) {
 			temporaryTimeslot[randomcourse1][1] = slot2;

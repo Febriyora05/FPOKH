@@ -40,7 +40,7 @@ public class MainTimetabling {
 	long starttimeLargestDegree = System.nanoTime();
             Jadwal schedule = new Jadwal(file, conflict_matrix, jumlahexam);
              timeSlot = schedule.schedulingByDegree(course_sorted);
-                int[][] timeslotByLargestDegree = schedule.getSchedule();
+                int[][] timeslotByLargestDegree = schedule.getJadwal();
                     long endtimeLargestDegree = System.nanoTime();
 
                 
@@ -57,15 +57,19 @@ public class MainTimetabling {
 		optimization.getTimeslotByTabuSearch();
 		long endtimeTS = System.nanoTime();
                 
-                System.out.println("PENJADWALAN  " + Output + "\n");
+                System.out.println("		PENJADWALAN DATASET  " + Output + "\n");
 		
-		System.out.println("Timeslot        : " + schedule.getJumlahTimeSlot(schedule.getSchedule()));
-		System.out.println("Penalti  	    : " + Evaluator.getPenalty(conflict_matrix, schedule.getSchedule(), jumlahmurid));
-		System.out.println("Waktu eksekusi  :"+ ((double) (endtimeLargestDegree - starttimeLargestDegree)/1000000000) + " detik.\n");
+		System.out.println("Timeslot pada Constructive Heuristics       : " + schedule.getJumlahTimeSlot(schedule.getJadwal()));
+		System.out.println("Penalti pada Constructive Heuristics        : " + Evaluator.getPenalty(conflict_matrix, schedule.getJadwal(), jumlahmurid));
+		System.out.println("Waktu eksekusi pada Constructive Heuristics :"+ ((double) (endtimeLargestDegree - starttimeLargestDegree)/1000000000) + " detik.\n");
                 
-       
+                System.out.println("--------------------------------------------------------------");
 		System.out.println("Waktu eksekusi yang dibutuhkan Hill Climbing " + ((double) (endtimeHC - starttimeHC)/1000000000) + " detik.\n");
-		System.out.println("Waktu eksekusi yang dibutuhkan Tabu Search " + ((double) (endtimeTS - starttimeTS)/1000000000) + " detik.");
+                
+		System.out.println("--------------------------------------------------------------");
+                System.out.println("Waktu eksekusi yang dibutuhkan Tabu Search " + ((double) (endtimeTS - starttimeTS)/1000000000) + " detik.");
+                
+                System.out.println("--------------------------------------------------------------");
 		
 //		
     }

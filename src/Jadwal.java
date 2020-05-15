@@ -5,18 +5,18 @@ public class Jadwal {
 	String file;
 	int[][] conflictMatrix;
 	int[] timeSlot;
-	int jumlahexam, timeslotIndex;
+	int Totalexam, timeslotIndex;
 	
-	public Jadwal(String file, int[][] conflictMatrix, int jumlahexam) {
+	public Jadwal(String file, int[][] conflictMatrix, int totalexam) {
 		this.file = file;
 		this.conflictMatrix = conflictMatrix;
-		this.jumlahexam = jumlahexam;
+		this.Totalexam = totalexam;
 	}
 	
-	public int[][] getSchedule() {
+	public int[][] getJadwal() {
 		// fill hasiltimeslot array
-		int [][] timeslotSchedule = new int[jumlahexam][2];
-    	for (int course = 0; course < jumlahexam; course++) {
+		int [][] timeslotSchedule = new int[Totalexam][2];
+    	for (int course = 0; course < Totalexam; course++) {
     		timeslotSchedule[course][0] = (course+1);
     		timeslotSchedule[course][1] = timeSlot[course];
     	}
@@ -24,7 +24,7 @@ public class Jadwal {
 	}
 	
 	public int[] scheduling(int[] timeslot) {
-		this.timeSlot = new int[jumlahexam];
+		this.timeSlot = new int[Totalexam];
 		timeslotIndex = 1;
     	for(int i= 0; i < conflictMatrix.length; i++)
     		this.timeSlot[i] = 0;
@@ -42,7 +42,7 @@ public class Jadwal {
 		return this.timeSlot;
 	}
 	public int[] schedulingByDegree(int [][] sortedCourse) {
-    	this.timeSlot = new int[jumlahexam];
+    	this.timeSlot = new int[Totalexam];
     	timeslotIndex = 1; // dimulai dari timeslot 1
     	for(int i= 0; i < sortedCourse.length; i++)
     		this.timeSlot[i] = 0;
